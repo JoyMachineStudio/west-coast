@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEST COAST - Le Vrai Local</title>
+    <style>
+        /* --- DESIGN SYSTÈME WEST COAST --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 2vw 4vw;
+        }
+
+        /* --- TITRE PRINCIPAL (#000050) --- */
+        .site-title {
+            font-size: clamp(4rem, 10vw, 10rem); 
+            text-transform: uppercase;
+            line-height: 0.8;
+            letter-spacing: -3px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            margin-top: 2vh;
+            font-weight: 900;
+            color: #000050;
+            transition: opacity 0.3s;
+        }
+        .site-title:hover { opacity: 0.8; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 40px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #000;
+            margin-bottom: 60px;
+            font-weight: bold;
+        }
+
+        header nav a { color: #000; text-decoration: none; cursor: pointer; transition: color 0.3s;}
+        header nav a:hover { color: #888; }
+
+        /* --- GRILLE MASONRY (3 COLONNES) --- */
+        .gallery {
+            column-count: 3;
+            column-gap: 20px;
+            margin-bottom: 80px;
+        }
+
+        .event-card {
+            position: relative;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+            overflow: hidden;
+            background-color: #000;
+            margin-bottom: 20px;
+            break-inside: avoid;
+        }
+
+        .event-poster {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
+            filter: brightness(1); /* Naturel par défaut */
+        }
+
+        /* Effet au survol : Éclaircissement */
+        .event-card:hover .event-poster { 
+            transform: scale(1.05); 
+            filter: brightness(1.2); 
+        }
+
+        .event-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 70%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* TEXTES BLANCS SUR IMAGES */
+        .event-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 25px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            text-transform: uppercase;
+        }
+
+        .event-date { 
+            font-size: 0.85rem; 
+            letter-spacing: 2px; 
+            color: #ffffff; 
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .event-title { 
+            font-size: clamp(2rem, 3vw, 3.5rem);
+            font-weight: 900; 
+            color: #ffffff; 
+            line-height: 0.85;
+            letter-spacing: -1px;
+            margin: 5px 0;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+        
+        .event-location { 
+            font-size: 0.9rem; 
+            color: #ffffff; 
+            letter-spacing: 1px; 
+            font-weight: bold;
+            opacity: 0.9;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* --- PHILOSOPHIE --- */
+        .philosophy-block {
+            max-width: 35%; 
+            margin: 80px 0 40px auto; 
+            text-align: right; 
+        }
+        .philosophy-block p {
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            line-height: 1.6;
+            font-weight: bold;
+            color: #222;
+        }
+        .philosophy-block span {
+            display: block;
+            margin-top: 15px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #888;
+        }
+
+        /* --- PAGES DÉTAILS (2 COLONNES) --- */
+        .event-detail-view { display: none; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn-back { display: inline-block; margin-bottom: 40px; color: #000; text-decoration: none; text-transform: uppercase; font-size: 0.85rem; font-weight: bold; letter-spacing: 2px; border-bottom: 2px solid #000; padding-bottom: 2px; cursor: pointer; }
+        .btn-back:hover { color: #888; border-color: #888; }
+
+        .detail-layout { display: flex; gap: 60px; margin-top: 20px; align-items: flex-start; }
+        .detail-left { flex: 1; }
+        .detail-right { flex: 1; padding-top: 20px; }
+
+        .detail-title { font-size: clamp(3.5rem, 6vw, 7rem); text-transform: uppercase; font-weight: 900; line-height: 0.85; margin-bottom: 20px; letter-spacing: -3px; }
+        .detail-meta { font-size: 1.1rem; color: #888; margin-bottom: 40px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;}
+        .detail-image { width: 100%; height: auto; object-fit: cover; border-radius: 2px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .detail-text { font-size: 1.4rem; line-height: 1.6; color: #111; margin-bottom: 40px; text-align: justify; font-weight: 500;}
+
+        .btn-map { display: inline-block; padding: 18px 40px; background-color: #000; color: #fff; text-decoration: none; text-transform: uppercase; font-weight: bold; font-size: 0.8rem; letter-spacing: 2px; transition: 0.3s; }
+        .btn-map:hover { background-color: #333; }
+
+        footer { margin-top: 100px; padding: 40px 0; font-size: 0.85rem; font-weight: bold; color: #000; text-align: center; border-top: 2px solid #000; text-transform: uppercase; letter-spacing: 3px;}
+
+        /* MOBILE */
+        @media (max-width: 1024px) { .gallery { column-count: 2; } .philosophy-block { max-width: 60%; } }
+        @media (max-width: 768px) {
+            .gallery { column-count: 1; }
+            .detail-layout { flex-direction: column; gap: 30px; }
+            header { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .philosophy-block { max-width: 100%; text-align: left; margin: 40px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="site-title" onclick="showHome()">WEST COAST</h1>
+    
+    <header>
+        <div>Le journal des vraies choses du coin</div>
+        <nav>
+            <a onclick="showHome()">Agenda</a> &nbsp;&nbsp;|&nbsp;&nbsp; 
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <!-- --- PAGE D'ACCUEIL --- -->
+    <main id="home-view">
+        <div class="gallery">
+            
+            <!-- 1. Festival Surfboard -->
+            <div class="event-card" onclick="showEvent('event-1')">
+                <img src="/shaper.jpeg" class="event-poster" alt="Surfboard">
+                <div class="event-info">
+                    <span class="event-date">25 Août • 10h00</span>
+                    <h2 class="event-title">Festival Surfboard</h2>
+                    <span class="event-location">L'atelier du coin</span>
+                </div>
+            </div>
+
+            <!-- 2. Surf Session -->
+            <div class="event-card" onclick="showEvent('event-2')">
+                <img src="/surf.jpeg" class="event-poster" alt="Surf">
+                <div class="event-info">
+                    <span class="event-date">15 Juin • 10h00</span>
+                    <h2 class="event-title">Surf Session</h2>
+                    <span class="event-location">La plage nous appartient</span>
+                </div>
+            </div>
+
+            <!-- 3. Mamie Bingo -->
+            <div class="event-card" onclick="showEvent('event-3')">
+                <img src="/loto.jpeg" class="event-poster" alt="Bingo">
+                <div class="event-info">
+                    <span class="event-date">28 Avril • 14h00</span>
+                    <h2 class="event-title">Mamie Bingo</h2>
+                    <span class="event-location">Le bar du coin</span>
+                </div>
+            </div>
+
+            <!-- 4. Papier Collage -->
+            <div class="event-card" onclick="showEvent('event-4')">
+                <img src="/collage.jpeg" class="event-poster" alt="Collage">
+                <div class="event-info">
+                    <span class="event-date">10 Août • 14h00</span>
+                    <h2 class="event-title">Papier Collage</h2>
+                    <span class="event-location">La place du village</span>
+                </div>
+            </div>
+
+            <!-- 5. Bus des Bars -->
+            <div class="event-card" onclick="showEvent('event-5')">
+                <img src="/bus.jpeg" class="event-poster" alt="Bus">
+                <div class="event-info">
+                    <span class="event-date">20 Juillet • 19h00</span>
+                    <h2 class="event-title">Bus des bars</h2>
+                    <span class="event-location">Une virée ensemble</span>
+                </div>
+            </div>
+
+            <!-- 6. Obsession -->
+            <div class="event-card" onclick="showEvent('event-6')">
+                <img src="/rock.jpeg" class="event-poster" alt="Obsession">
+                <div class="event-info">
+                    <span class="event-date">05 Mai • 21h30</span>
+                    <h2 class="event-title">Obsession</h2>
+                    <span class="event-location">Session on the beach</span>
+                </div>
+            </div>
+
+            <!-- 7. Exposition Art Graphique -->
+            <div class="event-card" onclick="showEvent('event-7')">
+                <img src="/expo.jpeg" class="event-poster" alt="Art">
+                <div class="event-info">
+                    <span class="event-date">14 Sept • 18h00</span>
+                    <h2 class="event-title">Exposition Art Graphique</h2>
+                    <span class="event-location">Salle du village</span>
+                </div>
+            </div>
+
+            <!-- 8. Bataille de polochons -->
+            <div class="event-card" onclick="showEvent('event-8')">
+                <img src="/polochons.jpeg" class="event-poster" alt="Polochons">
+                <div class="event-info">
+                    <span class="event-date">14 Juillet • 16h00</span>
+                    <h2 class="event-title">Bataille de polochons</h2>
+                    <span class="event-location">Plozevet VS Audierne</span>
+                </div>
+            </div>
+
+            <!-- 9. Skate Contest -->
+            <div class="event-card" onclick="showEvent('event-9')">
+                <img src="/skate.jpeg" class="event-poster" alt="Skate">
+                <div class="event-info">
+                    <span class="event-date">08 Juin • 14h00</span>
+                    <h2 class="event-title">Skate Contest</h2>
+                    <span class="event-location">Skatepark du coin</span>
+                </div>
+            </div>
+
+            <!-- 10. Hip-hop Chill -->
+            <div class="event-card" onclick="showEvent('event-10')">
+                <img src="/hiphop.jpeg" class="event-poster" alt="HipHop">
+                <div class="event-info">
+                    <span class="event-date">18 Mai • 22h00</span>
+                    <h2 class="event-title">Hip-hop Chill</h2>
+                    <span class="event-location">Jam session</span>
+                </div>
+            </div>
+
+            <!-- 11. Marché Poterie -->
+            <div class="event-card" onclick="showEvent('event-11')">
+                <img src="/local.jpeg" class="event-poster" alt="Poterie">
+                <div class="event-info">
+                    <span class="event-date">Dimanche • 09h00</span>
+                    <h2 class="event-title">Marché Poterie</h2>
+                    <span class="event-location">La place du village</span>
+                </div>
+            </div>
+
+            <!-- 12. Breizh Electro -->
+            <div class="event-card" onclick="showEvent('event-12')">
+                <img src="/electro.jpeg" class="event-poster" alt="Electro">
+                <div class="event-info">
+                    <span class="event-date">Vendredi • 21h00</span>
+                    <h2 class="event-title">Breizh Electro</h2>
+                    <span class="event-location">Beach Party</span>
+                </div>
+            </div>
+
+            <!-- 13. Running Coast -->
+            <div class="event-card" onclick="showEvent('event-13')">
+                <img src="/running.jpeg" class="event-poster" alt="Running">
+                <div class="event-info">
+                    <span class="event-date">22 Juin • 08h00</span>
+                    <h2 class="event-title">Running Coast</h2>
+                    <span class="event-location">Tous ensemble à la plage</span>
+                </div>
+            </div>
+
+            <!-- 14. Incontournable -->
+            <div class="event-card" onclick="showEvent('event-14')">
+                <img src="/commerce.jpeg" class="event-poster" alt="Commerces">
+                <div class="event-info">
+                    <span class="event-date">Dossier Spécial</span>
+                    <h2 class="event-title">Incontournable</h2>
+                    <span class="event-location">Bourg du coin</span>
+                </div>
+            </div>
+
+            <!-- 15. Blues Station -->
+            <div class="event-card" onclick="showEvent('event-15')">
+                <img src="/blues.jpeg" class="event-poster" alt="Blues">
+                <div class="event-info">
+                    <span class="event-date">12 Mai • 20h30</span>
+                    <h2 class="event-title">Blues Station</h2>
+                    <span class="event-location">Le bar du coin</span>
+                </div>
+            </div>
+
+            <!-- 16. Le Hibou Rouge -->
+            <div class="event-card" onclick="showEvent('event-16')">
+                <img src="/lecture.jpeg" class="event-poster" alt="Lecture">
+                <div class="event-info">
+                    <span class="event-date">02 Juin • 15h00</span>
+                    <h2 class="event-title">Le Hibou Rouge</h2>
+                    <span class="event-location">Lectures & Café</span>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="philosophy-block">
+            <p>WEST COAST est né d'une envie simple : créer du lien. Pas besoin de scroller sans fin sur les réseaux sociaux pour savoir ce qui se passe. Ici, c'est le journal des vraies choses à faire dans le coin. L'essentiel, l'authentique, pour se retrouver.</p>
+            <span>— La rédaction locale</span>
+        </div>
+    </main>
+
+
+    <!-- --- PAGES DE DÉTAILS (CONTENU DYNAMIQUE SIMULÉ) --- -->
+    <div id="detail-view" class="event-detail-view">
+        <a class="btn-back" onclick="showHome()">← Retour au journal</a>
+        <div class="detail-layout">
+            <div class="detail-left">
+                <img id="detail-img" src="" class="detail-image" alt="Event">
+            </div>
+            <div class="detail-right">
+                <h1 id="detail-title" class="detail-title"></h1>
+                <div id="detail-meta" class="detail-meta"></div>
+                <p id="detail-desc" class="detail-text"></p>
+                <a href="#" class="btn-map">S'y rendre</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        WEST COAST © 2024 — Le vrai local.
+    </footer>
+
+    <script>
+        // BASE DE DONNÉES DES ÉVÉNEMENTS
+        const EVENTS = {
+            'event-1': { title: 'Festival Surfboard', date: '25 Août • 10h00', loc: "L'atelier du coin", img: '/shaper.jpeg', desc: "L'élite du shape local se réunit pour présenter les planches qui feront les sessions de demain. Venez découvrir les secrets de fabrication des artisans de la côte." },
+            'event-2': { title: 'Surf Session', date: '15 Juin • 10h00', loc: 'La plage nous appartient', img: '/surf.jpeg', desc: "Une session de surf authentique ouverte à tous, suivie d'un moment de partage sur la plage au coucher du soleil." },
+            'event-3': { title: 'Mamie Bingo', date: '28 Avril • 14h00', loc: 'Le bar du coin', img: '/loto.jpeg', desc: "Le rendez-vous incontournable du dimanche après-midi. Ambiance survoltée et lots locaux à gagner dans le plus vieux bar du port." },
+            'event-4': { title: 'Papier Collage', date: '10 Août • 14h00', loc: 'La place du village', img: '/collage.jpeg', desc: "Un atelier créatif pour explorer l'art du collage avec des matériaux de récupération et des magazines anciens." },
+            'event-5': { title: 'Bus des bars', date: '20 Juillet • 19h00', loc: 'Une virée ensemble', img: '/bus.jpeg', desc: "Embarquez pour une virée nocturne à travers les meilleurs bistrots de la région. Convivialité et découvertes assurées." },
+            'event-6': { title: 'Obsession', date: '05 Mai • 21h30', loc: 'Session on the beach', img: '/rock.jpeg', desc: "Les guitares vont vibrer dans la cité médiévale. Une soirée rock brut avec les groupes émergents de la scène bretonne." },
+            'event-7': { title: 'Exposition Art Graphique', date: '14 Sept • 18h00', loc: 'Salle du village', img: '/expo.jpeg', desc: "Une immersion dans le graphisme contemporain local. Affiches, sérigraphies et installations numériques se côtoient." },
+            'event-8': { title: 'Bataille de polochons', date: '14 Juillet • 16h00', loc: 'Plozevet VS Audierne', img: '/polochons.jpeg', desc: "Préparez vos plus beaux pyjamas pour l'événement le plus doux de l'année. Une pluie de plumes s'abattra sur la place centrale." },
+            'event-9': { title: 'Skate Contest', date: '08 Juin • 14h00', loc: 'Skatepark du coin', img: '/skate.jpeg', desc: "Compétition de skate ouverte à tous les niveaux. Tricks spectaculaires et ambiance street culture toute la journée." },
+            'event-10': { title: 'Hip-hop Chill', date: '18 Mai • 22h00', loc: 'Jam session', img: '/hiphop.jpeg', desc: "DJ sets, open mic et danse. Une soirée dédiée à la culture hip-hop sous les étoiles du port." },
+            'event-11': { title: 'Marché Poterie', date: 'Dimanche • 09h00', loc: 'La place du village', img: '/local.jpeg', desc: "Rencontrez les céramistes locaux et découvrez leur savoir-faire ancestral dans le cadre magnifique de Pont-Croix." },
+            'event-12': { title: 'Breizh Electro', date: 'Vendredi • 21h00', loc: 'Beach Party', img: '/electro.jpeg', desc: "La musique électronique rencontre le littoral breton. Une expérience sonore unique les pieds dans le sable." },
+            'event-13': { title: 'Running Coast', date: '22 Juin • 08h00', loc: 'Tous ensemble à la plage', img: '/running.jpeg', desc: "Une course à pied sur le sable fin, face à l'immensité de l'océan. Pour le plaisir ou le chrono." },
+            'event-14': { title: 'Incontournable', date: 'Dossier Spécial', loc: 'Bourg du coin', img: '/commerce.jpeg', desc: "Un tour d'horizon des adresses qui font battre le cœur de notre région toute l'année." },
+            'event-15': { title: 'Blues Station', date: '12 Mai • 20h30', loc: 'Le bar du coin', img: '/blues.jpeg', desc: "L'âme du blues s'invite au pub. Une soirée acoustique intimiste avec des musiciens passionnés." },
+            'event-16': { title: 'Le Hibou Rouge', date: '02 Juin • 15h00', loc: 'Lectures & Café', img: '/lecture.jpeg', desc: "Partagez vos lectures favorites autour d'un bon café. Un moment suspendu pour les amoureux des mots." }
+        };
+
+        function showEvent(id) {
+            const ev = EVENTS[id];
+            if(!ev) return;
+            
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('detail-view').style.display = 'block';
+            
+            document.getElementById('detail-title').innerText = ev.title;
+            document.getElementById('detail-meta').innerText = `${ev.date} • ${ev.loc}`;
+            document.getElementById('detail-desc').innerText = ev.desc;
+            document.getElementById('detail-img').src = ev.img;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showHome() {
+            document.getElementById('detail-view').style.display = 'none';
+            document.getElementById('home-view').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
